@@ -21,7 +21,7 @@ Each following line will contain event data in the following order:
 - End Time
 
 >[!NOTE]
-> [```void get_session_data(calendar_t calendar);```](#get_session_data) reads from one event_t at a time from the text file.
+> [```void get_session_data(calendar_t *calendar);```](#get_session_data) reads from one event_t at a time from the text file.
 
 # Code Documentation
 This section gives an overview of each function, structure, and enumeration used in each file of the source code.<br/>
