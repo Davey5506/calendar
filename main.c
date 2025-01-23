@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "calendartools.h"
+#include "calendarTools.h"
 
 /**
  * @brief Get the desired action from the user.
@@ -16,14 +16,17 @@ void print_title_screen();
 
 int main(void) {
     print_title_screen();
+
     struct event_t *events = {};
     struct calendar_t calendar = {
         .events = events,
         .size = 0
     };
+    get_session_data(&calendar);
+
     bool run = true;
     while (run) {
-        /// Call functions from calendartools.h based on user input.
+        /// Call functions from calendarTools.h based on user input.
         switch (get_user_action()) {
             case CREATE_EVENT:
                 create_event(&calendar);
@@ -52,6 +55,7 @@ int main(void) {
                 break;
 
             case EXIT_calendar:
+                write_session_data(&calendar);
                 run = false;
                 break;
 

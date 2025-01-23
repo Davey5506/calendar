@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "calendartools.h"
+#include "calendarTools.h"
 
 /** @enum edit_actions
  * @brief Defines actions that are relevant to the edit_event function.
@@ -19,7 +19,7 @@ enum edit_actions {
 };
 
 
-/** @struct event_t calendartools.h
+/** @struct event_t calendarTools.h
  * @brief EMPTY represents the default state of an event.
  * This definition is used to clear old data
  * from the stack and heap memory assigned to the program.
@@ -214,4 +214,53 @@ struct event_t * resize_calendar(struct calendar_t * calendar) {
         exit(1);
     }
     return temp;
+}
+
+void get_session_data(struct calendar_t *calendar) {
+    FILE *file = fopen("sessionData.txt", "r");
+    int event_count;
+
+    if (file == NULL) {
+        printf("No session data found\n");
+        return;
+    }
+
+    fscanf(file, "%d", &event_count);
+    if (event_count > 0) {
+        for (int idx = 0; idx < event_count; idx++) {
+            calendar->events = resize_calendar(calendar);
+        }
+    }
+
+    for (int idx = 0; idx < event_count; idx++) {
+        fscanf(file, "%d", &calendar->events[idx].id);
+        fscanf(file, "%s", &calendar->events[idx].name);
+        fscanf(file, "%s", &calendar->events[idx].location);
+        fscanf(file, "%s", &calendar->events[idx].date);
+        fscanf(file, "%s", &calendar->events[idx].start_time);
+        fscanf(file, "%s", &calendar->events[idx].end_time);
+    }
+}
+
+void write_session_data(const struct calendar_t *calendar) {
+    FILE *file = fopen("sessionData.txt", "w");
+    if (file == NULL) {
+        printf("File could not be created.\n");
+    }
+    fprintf(file, "%d\n", calendar->size);
+
+    for (int idx = 0; idx < calendar->size; idx++) {
+        fprintf(file, "%d\n"
+                      "%s\n"
+                      "%s\n"
+                      "%s\n"
+                      "%s\n"
+                      "%s\n",
+                      calendar->events[idx].id,
+                      calendar->events[idx].name,
+                      calendar->events[idx].location,
+                      calendar->events[idx].date,
+                      calendar->events[idx].start_time,
+                      calendar->events[idx].end_time);
+    }
 }

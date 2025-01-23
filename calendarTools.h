@@ -68,8 +68,20 @@ void delete_event(const struct calendar_t *calendar);
 
 /**
  * @brief Print to console all data within a target event.
- * @param [in] calendar The pointer of the calendar_t variable that has the target event.
+ * @param [in] calendar Pointer of a calendar_t variable that has the target event.
  * @param [in] event_id The array index of the target event.
  */
 void print_event(const struct calendar_t *calendar, const int event_id);
+
+/**
+ * @brief Gets calendar_t data from a previous session.
+ * @param [I/O] calendar Pointer to a calendar_t variable.
+ */
+void get_session_data(struct calendar_t *calendar);
+
+/**
+ * @brief Store calendar_t data in a .txt file.
+ * @param [in] calendar Pointer to a calendar_t variable.
+ */
+void write_session_data(const struct calendar_t *calendar);
 #endif //ARRARYTOOLS_H
