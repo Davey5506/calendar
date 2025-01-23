@@ -6,25 +6,12 @@
 #include <string.h>
 #include "calendarTools.h"
 
-/** @enum edit_actions
- * @brief Defines actions that are relevant to the edit_event function.
- * (See line 97 for use)
- */
-enum edit_actions {
-    CHANGE_NAME = 1,
-    CHANGE_LOCATION = 2,
-    CHANGE_DATE = 3,
-    CHANGE_TIME = 4,
-    EXIT_EDIT = 5
-};
-
-
-/** @struct event_t calendarTools.h
+/** @typedef event_t calendarTools.h
  * @brief EMPTY represents the default state of an event.
  * This definition is used to clear old data
  * from the stack and heap memory assigned to the program.
  */
-struct event_t EMPTY = {
+event_t EMPTY = {
     .id = -1,
     .name = "",
     .location = "",
@@ -37,20 +24,19 @@ struct event_t EMPTY = {
  * @param [in] calendar a pointer to a calendar_t struct that contains a calendar of events.
  * @return event_t pointer that points to an expanded array of events.
  */
-struct event_t * resize_calendar(struct calendar_t *calendar);
+event_t* resize_calendar(calendar_t *calendar);
 
 /**
  * @brief Sets newly created indexes to struct event_t EMPTY.
- * @param calendar A pointer to a calendar variable.
- * @return No value is explicitly returned, but events field of calendar is updated by reference.
+ * @param [I/O] calendar A pointer to a calendar_t variable.
  */
-void initialize_event(const struct calendar_t* calendar);
+void initialize_event(const calendar_t* calendar);
 
-void initialize_event(const struct calendar_t* calendar) {
+void initialize_event(const calendar_t* calendar) {
     calendar->events[calendar->size - 1] = EMPTY;
 }
 
-void get_event_id(const struct calendar_t * calendar, int *event_id) {
+void get_event_id(const calendar_t * calendar, int *event_id) {
     /// Get the name of the target event.
     char event_name[32];
     printf("Event name: ");
@@ -73,10 +59,10 @@ void get_event_id(const struct calendar_t * calendar, int *event_id) {
     *event_id = idx;
 }
 
-void create_event(struct calendar_t *calendar) {
+void create_event(calendar_t *calendar) {
     printf("Creating Event\n\n");
     /// Inintialize temporary event variable.
-    struct event_t event = {
+    event_t event = {
         .id = -1,
         .name = "",
         .location = "",
@@ -120,9 +106,16 @@ void create_event(struct calendar_t *calendar) {
     calendar->events[event.id] = event;
 }
 
-void edit_event(const struct calendar_t *calendar) {
+void edit_event(const calendar_t *calendar) {
     printf("Edit Event\n\n");
 
+    enum edit_actions {
+        CHANGE_NAME = 1,
+        CHANGE_LOCATION = 2,
+        CHANGE_DATE = 3,
+        CHANGE_TIME = 4,
+        EXIT_EDIT = 5
+    };
     /// Get event name and check if it exsists.
     int event_id = -1;
     get_event_id(calendar, &event_id);
@@ -132,7 +125,7 @@ void edit_event(const struct calendar_t *calendar) {
     }
 
     /// Assign target event to a temporary variable.
-    struct event_t event = calendar->events[event_id];
+    event_t event = calendar->events[event_id];
     print_event(calendar, event_id);
 
     /// Get user action.
@@ -176,7 +169,7 @@ void edit_event(const struct calendar_t *calendar) {
     calendar->events[event.id] = event;
 }
 
-void delete_event(const struct calendar_t *calendar) {
+void delete_event(const calendar_t *calendar) {
     printf("Deleting Event\n\n");
 
     /// Get event name and check if it exsists.
@@ -191,9 +184,9 @@ void delete_event(const struct calendar_t *calendar) {
     calendar->events[event_id] = EMPTY;
 }
 
-void print_event(const struct calendar_t *calendar, const int event_id) {
+void print_event(const calendar_t *calendar, int event_id) {
     ///Assign target event to a temporary variable.
-    struct event_t event = calendar->events[event_id];
+    event_t event = calendar->events[event_id];
 
     /// Format and print event data.
     printf("Name: %s\n"
@@ -203,10 +196,10 @@ void print_event(const struct calendar_t *calendar, const int event_id) {
            "End time: %s\n\n", event.name, event.location, event.date, event.start_time, event.end_time);
 }
 
-struct event_t * resize_calendar(struct calendar_t * calendar) {
+event_t * resize_calendar(calendar_t * calendar) {
     /// Increase the size of the array in calendar by the size of event_t.
     calendar->size++;
-    struct event_t* temp = realloc(calendar->events, sizeof(struct event_t) * calendar->size);
+    event_t* temp = realloc(calendar->events, sizeof(event_t) * calendar->size);
 
     /// Check if realloc failed.
     if (temp == NULL) {
@@ -216,7 +209,8 @@ struct event_t * resize_calendar(struct calendar_t * calendar) {
     return temp;
 }
 
-void get_session_data(struct calendar_t *calendar) {
+void get_session_data(calendar_t *calendar) {
+    ///Open file in read mode.
     FILE *file = fopen("sessionData.txt", "r");
     int event_count;
 
@@ -225,6 +219,7 @@ void get_session_data(struct calendar_t *calendar) {
         return;
     }
 
+    ///Read event data from the file.
     fscanf(file, "%d", &event_count);
     if (event_count > 0) {
         for (int idx = 0; idx < event_count; idx++) {
@@ -240,15 +235,21 @@ void get_session_data(struct calendar_t *calendar) {
         fscanf(file, "%s", &calendar->events[idx].start_time);
         fscanf(file, "%s", &calendar->events[idx].end_time);
     }
+
+    fclose(file);
 }
 
-void write_session_data(const struct calendar_t *calendar) {
+void write_session_data(const calendar_t *calendar) {
+    ///Open file in write mode.
     FILE *file = fopen("sessionData.txt", "w");
     if (file == NULL) {
         printf("File could not be created.\n");
     }
+
+    ///Write array size as the first line in the file.
     fprintf(file, "%d\n", calendar->size);
 
+    /// Write all event data from from calednar.
     for (int idx = 0; idx < calendar->size; idx++) {
         fprintf(file, "%d\n"
                       "%s\n"
@@ -263,4 +264,6 @@ void write_session_data(const struct calendar_t *calendar) {
                       calendar->events[idx].start_time,
                       calendar->events[idx].end_time);
     }
+
+    fclose(file);
 }

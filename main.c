@@ -7,18 +7,18 @@
  * @brief Get the desired action from the user.
  * @return The desired action of the user as an integer between 1 and 5.
  */
-int get_user_action();
+int get_user_action(void);
 
 /**
  * @brief Prints to console, a welcome screen.
  */
-void print_title_screen();
+void print_title_screen(void);
 
 int main(void) {
     print_title_screen();
 
-    struct event_t *events = {};
-    struct calendar_t calendar = {
+    event_t *events = {};
+    calendar_t calendar = {
         .events = events,
         .size = 0
     };
@@ -54,7 +54,7 @@ int main(void) {
                 print_event(&calendar,event_id);
                 break;
 
-            case EXIT_calendar:
+            case EXIT_CALENDAR:
                 write_session_data(&calendar);
                 run = false;
                 break;
@@ -67,7 +67,7 @@ int main(void) {
     free(calendar.events);
 }
 
-int get_user_action() {
+int get_user_action(void) {
     printf("Please enter an action:\n"
            "1. Create Event\n"
            "2. Edit Event\n"
@@ -79,7 +79,7 @@ int get_user_action() {
     return action;
 }
 
-void print_title_screen() {
+void print_title_screen(void) {
     printf(""
         " _______     _______     __         _________    ____  __    _________      _______     ______\n"
         "/  _____|   /   _   \\   |  |        |  ______|   |   \\ | |   |  ___   \\    /   _   \\   |   __  \\\n"
