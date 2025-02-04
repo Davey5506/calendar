@@ -4,6 +4,8 @@
 - Editing Events
 - Deleting Events
 - Printing Events to the Console
+### Disclaimer
+This is my first C program, so I expect there to be conventions or best practices that are not followed as I was unaware of them at the time of creation.
 
 # Data Management
 **Calendar** uses a nested structure configuration to manage the data associated with the events inputted by the user.
@@ -11,8 +13,8 @@
 All events the user inputs are stored in an array that is dynamically allocated memory as needed.
 
 ## Post Runtime Data Management
-**Calendar** will store all session data to a text file when the exit command is given by the user.<br/>
-The fist line of the text file will contain the length of the array that was used to store the events.
+**Calendar** will store all session data in a text file when the user gives the exit command.<br/>
+The first line of the text file will contain the length of the array that was used to store the events.
 Each following line will contain event data in the following order:
 - Event ID
 - Name
