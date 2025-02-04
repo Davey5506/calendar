@@ -1,5 +1,5 @@
 # About Calendar
-**Calendar** is a basic event management system which was built using the MinGW toolchain that is bundled with JetBrains Clion. Which is capable of:
+**Calendar** is a basic event management system that was built using the MinGW toolchain that is bundled with JetBrains Clion. Which is capable of:
 - Creating Events
 - Editing Events
 - Deleting Events
